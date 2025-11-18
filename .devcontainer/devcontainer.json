@@ -1,0 +1,25 @@
+{
+    "name": "fastapi-dev",
+    "dockerComposeFile": "./compose.yaml",
+    "service": "fastapi-dev",
+    "workspaceFolder": "/workspace",
+    "remoteUser": "vscode",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "esbenp.prettier-vscode",
+                "oderwat.indent-rainbow",
+                "streetsidesoftware.code-spell-checker",
+                "mhutchie.git-graph",
+                "editorconfig.editorconfig",
+                "shardulm94.trailing-spaces",
+                "ms-ceintl.vscode-language-pack-ja",
+                "usernamehw.errorlens",
+                "ms-python.python",
+                "ms-python.isort",
+                "ms-python.black-formatter",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    }
+}
