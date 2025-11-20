@@ -1,0 +1,7 @@
+version: "3"
+tasks:
+  run:
+    cmds:
+      - echo "バックエンド起動"
+      - uv run uvicorn main:app --reload
+    silent: true
