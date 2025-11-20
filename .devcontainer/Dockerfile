@@ -1,0 +1,50 @@
+# ベースイメージ
+FROM ubuntu:22.04
+
+# パッケージ ---
+RUN apt-get update \
+    && apt-get install -y build-essential git curl zsh \
+    && curl -1sLf "https://dl.cloudsmith.io/public/task/task/setup.deb.sh" | bash \
+    && apt-get update \
+    && apt-get install -y task \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /workspace
+
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# ターミナルの環境を zsh に変更
+RUN chsh -s $(which zsh) vscode
+
+USER $USERNAME
+WORKDIR /home/vscode
+
+# oh-my-zsh インストール
+RUN rm -rf ~/.oh-my-zsh && \
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+# autosuggestions インストール
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions \
+    ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+# syntax-highlighting インストール
+RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+    ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+RUN sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/' ~/.zshrc
+
+# uv インストール
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
+    && echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+
+WORKDIR /workspace

@@ -1,0 +1,10 @@
+services:
+  fastapi-dev:
+    container_name: fastapi-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../:/workspace:cached
+    working_dir: /workspace
+    command: sleep infinity
